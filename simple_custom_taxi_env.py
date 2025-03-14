@@ -180,6 +180,7 @@ def run_agent(agent_file, env_config, render=False):
     spec = importlib.util.spec_from_file_location("student_agent", agent_file)
     student_agent = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(student_agent)
+    student_agent.train()
 
     env = SimpleTaxiEnv(**env_config)
     obs, _ = env.reset()
@@ -198,8 +199,10 @@ def run_agent(agent_file, env_config, render=False):
         
         
         action = student_agent.get_action(obs)
+        print(action)
 
         obs, reward, done, _ = env.step(action)
+        print(reward)
         print('obs=',obs)
         total_reward += reward
         step_count += 1
