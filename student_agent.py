@@ -54,6 +54,9 @@ def train():
         state = obs
         total_reward = 0
 
+        if state not in q_table:
+            q_table[state] = np.zeros(6)
+
         for _ in range(1000):  # Limit episode length
             action = random.choice([0, 1, 2, 3, 4, 5])
             next_obs, reward, done, _ = env.step(action)
