@@ -60,7 +60,7 @@ def train():
             print(reward)
             if action >= 4:
                 reward_shape = -100000
-            elif reward == -5.1:
+            elif reward <= -5:
                 reward_shape = -7777
             else:
                 reward_shape = 1
