@@ -29,7 +29,7 @@ def save_q_table():
     with open("q_table.pkl", "wb") as f:
         pickle.dump(q_table, f)
     print("Q-table saved.")
-    print(q_table)
+    # print(q_table)
 
 
 def get_action(state):
@@ -46,7 +46,7 @@ def get_action(state):
         load_q_table()
     # print(q_table)
 
-    print(state)
+    # print(state)
 
     # if state not in q_table:
     #     q_table[state] = np.zeros(6)  # Only 4 possible actions
@@ -62,7 +62,7 @@ def update_q_table(state, action, reward, next_state):
     """Update the Q-table using the Q-learning update rule."""
     if next_state not in q_table:
         q_table[next_state] = np.zeros(6)  # Only 4 actions available
-    print(reward)
+    # print(reward)
     # q_table[state][action] += ALPHA * (reward + GAMMA * np.max(q_table[next_state]) - q_table[state][action])
     q_table[state][action] += reward
 
@@ -73,7 +73,7 @@ def train():
 
     for episode in range(EPISODES):
         obs, _ = env.reset()
-        print(obs)
+        # print(obs)
         state = obs
         done = False
         total_reward = 0
@@ -82,8 +82,8 @@ def train():
             action = random.choice([0, 1, 2, 3, 4, 5])
             next_obs, reward, done, truncated, info = env.step(action)
             next_state = next_obs
-            print(state, next_state)
-            print(action, reward, done, truncated)
+            # print(state, next_state)
+            # print(action, reward, done, truncated)
 
             # if truncated:
             #     break
@@ -92,7 +92,7 @@ def train():
             if action >= 4:
                 reward_shape = -100000
             elif next_state == state:
-                print(q_table[state][action])
+                # print(q_table[state][action])
                 reward_shape = -7777
             
 

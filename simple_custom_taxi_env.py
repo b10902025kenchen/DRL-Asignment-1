@@ -130,7 +130,7 @@ class SimpleTaxiEnv():
         state = (taxi_row, taxi_col, self.stations[0][0],self.stations[0][1] ,self.stations[1][0],self.stations[1][1],self.stations[2][0],self.stations[2][1],self.stations[3][0],self.stations[3][1],obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look)
         return state
     def render_env(self, taxi_pos,   action=None, step=None, fuel=None):
-        clear_output(wait=True)
+        # clear_output(wait=True)
 
         grid = [['.'] * self.grid_size for _ in range(self.grid_size)]
         
@@ -199,10 +199,10 @@ def run_agent(agent_file, env_config, render=False):
         
         
         action = student_agent.get_action(obs)
-        print(action)
+        # print(action)
 
         obs, reward, done, _ = env.step(action)
-        print(reward)
+        # print(reward)
         print('obs=',obs)
         total_reward += reward
         step_count += 1
