@@ -7,7 +7,7 @@ from simple_custom_taxi_env import SimpleTaxiEnv
 ALPHA = 0.1  # Learning rate
 GAMMA = 0.9  # Discount factor
 EPISODES = 100  # Training episodes
-EPSILON = 1  # Exploration rate
+EPSILON = 0.99  # Exploration rate
 q_table = {}
 
 def load_q_table():
