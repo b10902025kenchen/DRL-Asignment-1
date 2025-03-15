@@ -36,9 +36,9 @@ def get_action(state):
     """Choose action using epsilon-greedy policy, only allowing actions 0-3."""
     taxi_row, taxi_col, r_row, r_col, g_row, g_col, y_row, y_col, b_row, b_col, \
     obstacle_north, obstacle_south, obstacle_east, obstacle_west, \
-    passenger_look, destination_look = state
+    passenger_look, destination_look, n = state
 
-    state=(taxi_row * 5+taxi_col)*5*4+(passenger_look*4)+destination_look
+    state=(taxi_row * n + taxi_col) * n * (n-1) + (passenger_look * (n-1)) + destination_look
 
 
     # Load Q-table if it's not already loaded

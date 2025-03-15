@@ -126,8 +126,9 @@ class SimpleTaxiEnv():
         destination_loc_middle  = int( (taxi_row, taxi_col) == self.destination)
         destination_look = destination_loc_north or destination_loc_south or destination_loc_east or destination_loc_west or destination_loc_middle
 
+        n = self.grid_size
         
-        state = (taxi_row, taxi_col, self.stations[0][0],self.stations[0][1] ,self.stations[1][0],self.stations[1][1],self.stations[2][0],self.stations[2][1],self.stations[3][0],self.stations[3][1],obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look)
+        state = (taxi_row, taxi_col, self.stations[0][0],self.stations[0][1] ,self.stations[1][0],self.stations[1][1],self.stations[2][0],self.stations[2][1],self.stations[3][0],self.stations[3][1],obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look, n)
         return state
     def render_env(self, taxi_pos,   action=None, step=None, fuel=None):
         clear_output(wait=True)
@@ -189,7 +190,7 @@ def run_agent(agent_file, env_config, render=False):
     step_count = 0
     stations = [(0, 0), (0, 4), (4, 0), (4,4)]
     
-    taxi_row, taxi_col, _,_,_,_,_,_,_,_,obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look = obs
+    taxi_row, taxi_col, _,_,_,_,_,_,_,_,obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look, destination_look, n = obs
 
     if render:
         env.render_env((taxi_row, taxi_col),
@@ -207,7 +208,7 @@ def run_agent(agent_file, env_config, render=False):
         total_reward += reward
         step_count += 1
 
-        taxi_row, taxi_col, _,_,_,_,_,_,_,_,obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look,destination_look = obs
+        taxi_row, taxi_col, _,_,_,_,_,_,_,_,obstacle_north, obstacle_south, obstacle_east, obstacle_west, passenger_look,destination_look,n = obs
 
         if render:
             env.render_env((taxi_row, taxi_col),
