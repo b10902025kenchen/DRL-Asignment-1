@@ -41,8 +41,8 @@ def update_q_table(state, action, reward, next_state):
     """Update the Q-table using the Q-learning update rule."""
     if next_state not in q_table:
         q_table[next_state] = np.zeros(6)
-    # q_table[state][action] += ALPHA * (reward + GAMMA * np.max(q_table[next_state]) - q_table[state][action])
-    q_table[state][action] += reward
+    q_table[state][action] += ALPHA * (reward + GAMMA * np.max(q_table[next_state]) - q_table[state][action])
+    # q_table[state][action] += reward
 
 def train():
     """Train the agent using Q-learning."""
@@ -59,11 +59,13 @@ def train():
 
         for _ in range(1000):  # Limit episode length
             action = random.choice([0, 1, 2, 3, 4, 5])
-            next_obs, reward, done, _ = env.step(action)
+            next_obs, reward, done, truncate = env.step(action)
             next_state = next_obs
             print(reward)
             if action >= 4:
                 reward_shape = -100000
+            elif truncate:
+                reward_shape = 10000
             elif reward <= -5:
                 reward_shape = -7777
             else:
