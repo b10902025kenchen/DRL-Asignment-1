@@ -30,27 +30,34 @@ def save_q_table():
 
 
 prev_action = None  # Track the previous action
+action_counts = {0: 0, 1: 0, 2: 0, 3: 0}  # Track action selection counts
 
 def get_action(state):
-    """Choose action using epsilon-greedy policy, avoiding repeating the previous action."""
-    global prev_action
+    """Choose action using epsilon-greedy policy, avoiding repetition and ensuring balance."""
+    global prev_action, action_counts
 
     if state not in q_table:
         q_table[state] = np.zeros(6)
 
     if random.uniform(0, 1) < EPSILON:  # Exploration
         valid_actions = [a for a in range(4) if a != prev_action]  # Exclude previous action
-        action = random.choice(valid_actions)
+        min_count = min(action_counts[a] for a in valid_actions)  # Find least chosen actions
+        least_chosen_actions = [a for a in valid_actions if action_counts[a] == min_count]
+        action = random.choice(least_chosen_actions)  # Pick from the least chosen ones
     else:  # Exploitation
         best_action = np.argmax(q_table[state])
         if best_action == prev_action:  # If the best action is the previous action, pick another
             valid_actions = [a for a in range(4) if a != prev_action]
-            action = random.choice(valid_actions)
+            min_count = min(action_counts[a] for a in valid_actions)
+            least_chosen_actions = [a for a in valid_actions if action_counts[a] == min_count]
+            action = random.choice(least_chosen_actions)
         else:
             action = best_action
 
-    prev_action = action  # Store the chosen action
+    action_counts[action] += 1  # Update count
+    prev_action = action  # Store chosen action
     return action
+
 
 
 def update_q_table(state, action, reward, next_state):
