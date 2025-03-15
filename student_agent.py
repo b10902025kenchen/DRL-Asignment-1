@@ -28,14 +28,30 @@ def save_q_table():
     print("Q-table saved.")
     print(q_table)
 
+
+prev_action = None  # Track the previous action
+
 def get_action(state):
-    """Choose action using epsilon-greedy policy, only allowing actions 0-3."""
+    """Choose action using epsilon-greedy policy, avoiding repeating the previous action."""
+    global prev_action
+
     if state not in q_table:
         q_table[state] = np.zeros(6)
-    
-    if random.uniform(0, 1) < EPSILON:
-        return random.randint(0, 3)  # Explore actions 0-3
-    return np.argmax(q_table[state])  # Exploit best known action
+
+    if random.uniform(0, 1) < EPSILON:  # Exploration
+        valid_actions = [a for a in range(4) if a != prev_action]  # Exclude previous action
+        action = random.choice(valid_actions)
+    else:  # Exploitation
+        best_action = np.argmax(q_table[state])
+        if best_action == prev_action:  # If the best action is the previous action, pick another
+            valid_actions = [a for a in range(4) if a != prev_action]
+            action = random.choice(valid_actions)
+        else:
+            action = best_action
+
+    prev_action = action  # Store the chosen action
+    return action
+
 
 def update_q_table(state, action, reward, next_state):
     """Update the Q-table using the Q-learning update rule."""
