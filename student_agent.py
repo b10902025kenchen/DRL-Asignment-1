@@ -27,9 +27,7 @@ def save_q_table():
         pickle.dump(q_table, f)
     print("Q-table saved.")
     print(q_table)
-
-
-prev = None  
+ 
 count_table = {0: 0, 1: 0, 2: 0, 3: 0}  
 
 def softmax(x, temperature=0.5):
@@ -46,12 +44,12 @@ def softmax(x, temperature=0.5):
 
 def get_action(state):
     """Choose action using epsilon-greedy policy, favoring less used actions probabilistically."""
-    global prev, count_table
+    global count_table
 
     if state not in q_table:
         q_table[state] = np.zeros(6)
 
-    valid_actions = [a for a in range(4) if a != prev]  
+    valid_actions = [a for a in range(4)]  
 
     if random.uniform(0, 1) < EPSILON:  # Exploration: Use softmax probability
         counts = np.array([count_table[a] for a in valid_actions])
@@ -63,14 +61,9 @@ def get_action(state):
         action = np.random.choice(valid_actions, p=probabilities)  # Choose action based on probability
     else:  # Exploitation: Choose best Q-value action
         best_action = np.argmax(q_table[state])
-        if best_action == prev:  
-            valid_actions_q = sorted(valid_actions, key=lambda a: q_table[state][a], reverse=True)
-            action = valid_actions_q[0]  
-        else:
-            action = best_action
+        action = best_action
 
     count_table[action] += 1  
-    prev = action  
     return action
 
 
