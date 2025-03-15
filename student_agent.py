@@ -33,7 +33,7 @@ def get_action(state):
     if state not in q_table:
         q_table[state] = np.zeros(6)
     
-    if random.uniform(0, 1) > EPSILON:
+    if random.uniform(0, 1) < EPSILON:
         return random.randint(0, 3)  # Explore actions 0-3
     return np.argmax(q_table[state])  # Exploit best known action
 
@@ -58,7 +58,7 @@ def train():
             q_table[state] = np.zeros(6)
 
         for _ in range(1000):  # Limit episode length
-            action = random.choice([0, 1, 2, 3, 4, 5])
+            action = get_action(state)
             next_obs, reward, done, truncate = env.step(action)
             next_state = next_obs
             print(reward)
