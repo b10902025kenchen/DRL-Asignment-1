@@ -54,7 +54,7 @@ def train():
         total_reward = 0
 
         for _ in range(10):  # Limit episode length
-            action = get_action(state)
+            action = random.choice([0, 1, 2, 3, 4, 5])
             next_obs, reward, done, _ = env.step(action)
             next_state = next_obs
             print(reward)
