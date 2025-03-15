@@ -29,34 +29,51 @@ def save_q_table():
     print(q_table)
 
 
-prev_action = None  # Track the previous action
-action_counts = {0: 0, 1: 0, 2: 0, 3: 0}  # Track action selection counts
+prev = None  
+count_table = {0: 0, 1: 0, 2: 0, 3: 0}  
+
+def softmax(x, temperature=0.5):
+    """Compute numerically stable softmax, favoring smaller values (less chosen actions)."""
+    x = np.array(x, dtype=np.float64)  # Ensure float64 for precision
+    x = x - np.max(x)  # Stability trick to prevent overflow
+    exp_x = np.exp(-x / temperature)  # Negative to favor less chosen actions
+    
+    sum_exp_x = np.sum(exp_x)
+    if sum_exp_x == 0:  
+        return np.ones_like(x) / len(x)  # If all weights are zero, return uniform probabilities
+    
+    return exp_x / sum_exp_x  # Normalize
 
 def get_action(state):
-    """Choose action using epsilon-greedy policy, avoiding repetition and ensuring balance."""
-    global prev_action, action_counts
+    """Choose action using epsilon-greedy policy, favoring less used actions probabilistically."""
+    global prev, count_table
 
     if state not in q_table:
         q_table[state] = np.zeros(6)
 
-    if random.uniform(0, 1) < EPSILON:  # Exploration
-        valid_actions = [a for a in range(4) if a != prev_action]  # Exclude previous action
-        min_count = min(action_counts[a] for a in valid_actions)  # Find least chosen actions
-        least_chosen_actions = [a for a in valid_actions if action_counts[a] == min_count]
-        action = random.choice(least_chosen_actions)  # Pick from the least chosen ones
-    else:  # Exploitation
+    valid_actions = [a for a in range(4) if a != prev]  
+
+    if random.uniform(0, 1) < EPSILON:  # Exploration: Use softmax probability
+        counts = np.array([count_table[a] for a in valid_actions])
+        probabilities = softmax(counts)  # Compute softmax probabilities
+        
+        if np.any(np.isnan(probabilities)):  # Debugging check
+            print(f"NaN detected in probabilities: counts={counts}, probabilities={probabilities}")
+
+        action = np.random.choice(valid_actions, p=probabilities)  # Choose action based on probability
+    else:  # Exploitation: Choose best Q-value action
         best_action = np.argmax(q_table[state])
-        if best_action == prev_action:  # If the best action is the previous action, pick another
-            valid_actions = [a for a in range(4) if a != prev_action]
-            min_count = min(action_counts[a] for a in valid_actions)
-            least_chosen_actions = [a for a in valid_actions if action_counts[a] == min_count]
-            action = random.choice(least_chosen_actions)
+        if best_action == prev:  
+            valid_actions_q = sorted(valid_actions, key=lambda a: q_table[state][a], reverse=True)
+            action = valid_actions_q[0]  
         else:
             action = best_action
 
-    action_counts[action] += 1  # Update count
-    prev_action = action  # Store chosen action
+    count_table[action] += 1  
+    prev = action  
     return action
+
+
 
 
 
