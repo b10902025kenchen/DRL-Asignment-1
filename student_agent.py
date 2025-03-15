@@ -8,6 +8,7 @@ ALPHA = 0.1  # Learning rate
 GAMMA = 0.9  # Discount factor
 EPISODES = 100  # Training episodes
 EPSILON = 1  # Exploration rate
+q_table = {}
 
 def load_q_table():
     """Load Q-table if it exists."""
@@ -17,7 +18,7 @@ def load_q_table():
             q_table = pickle.load(f)
         print("Q-table loaded successfully.")
     except FileNotFoundError:
-        q_table = {}
+        # q_table = {}
         print("No saved Q-table found, starting fresh.")
 
 def save_q_table():
